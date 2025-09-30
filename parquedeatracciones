@@ -1,0 +1,58 @@
+
+CREATE TABLE IF NOT EXISTS Atracciones_parque (
+    codigo_atraccion INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    capacidad_maxima SMALLINT NOT NULL,
+    altura_minima DECIMAL(3,2) NOT NULL,
+    estado ENUM('operativa', 'mantenimiento') DEFAULT 'operativa'
+);
+
+CREATE TABLE IF NOT EXISTS Visitantes_parque (
+    dni VARCHAR(20) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    edad TINYINT NOT NULL,
+    telefono VARCHAR(15),
+    correo VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS Entradas_parque (
+    id_entrada INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    tipo ENUM('adulto', 'niño') NOT NULL,
+    precio DECIMAL(6,2) NOT NULL,
+    dni_visitante VARCHAR(20),
+    FOREIGN KEY (dni_visitante) REFERENCES Visitantes_parque(dni)
+);
+
+CREATE TABLE IF NOT EXISTS Empleados_parque (
+    codigo_empleado INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    cargo VARCHAR(50) NOT NULL,
+    horario VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS Mantenimientos_parque (
+    id_mantenimiento INT PRIMARY KEY AUTO_INCREMENT,
+    codigo_atraccion INT,
+    fecha DATE NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    FOREIGN KEY (codigo_atraccion) REFERENCES Atracciones_parque(codigo_atraccion)
+);
+
+
+CREATE TABLE IF NOT EXISTS Entrada_Atraccion_parque (
+    id_entrada INT,
+    codigo_atraccion INT,
+    PRIMARY KEY (id_entrada, codigo_atraccion),
+    FOREIGN KEY (id_entrada) REFERENCES Entradas_parque(id_entrada),
+    FOREIGN KEY (codigo_atraccion) REFERENCES Atracciones_parque(codigo_atraccion)
+);
+
+CREATE TABLE IF NOT EXISTS Empleado_Atraccion_parque (
+    codigo_empleado INT,
+    codigo_atraccion INT,
+    PRIMARY KEY (codigo_empleado, codigo_atraccion),
+    FOREIGN KEY (codigo_empleado) REFERENCES Empleados_parque(codigo_empleado),
+    FOREIGN KEY (codigo_atraccion) REFERENCES Atracciones_parque(codigo_atraccion)
+);
